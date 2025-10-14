@@ -1,0 +1,67 @@
+# Streamlit Configuration for Airlines Dashboard
+
+[global]
+# Set to false for production
+developmentMode = false
+
+# Data directory
+dataDir = "~/.streamlit"
+
+[logger]
+# Level of logging: 'error', 'warning', 'info', or 'debug'
+level = "info"
+
+[client]
+# Display toolbar in viewer
+toolbarMode = "viewer"
+
+# Show error details in browser console
+showErrorDetails = true
+
+[browser]
+# Internet address where app will be served
+serverAddress = "0.0.0.0"
+
+# Port where app will be served
+serverPort = 8501
+
+# Automatically open browser tab
+gatherUsageStats = false
+
+[server]
+# Port where app will be served
+port = 8501
+
+# Address to bind to
+address = "0.0.0.0"
+
+# Enables support for Cross-Origin Resource Sharing (CORS)
+enableCORS = false
+
+# Enables support for Cross-Site Request Forgery (CSRF) protection
+enableXsrfProtection = true
+
+# Max size for uploaded files (in MB)
+maxUploadSize = 200
+
+# Timeout for websocket connections (in seconds)
+maxMessageSize = 200
+
+# Enable websocket compression
+enableWebsocketCompression = false
+
+[theme]
+# Base theme: "light" or "dark"
+base = "light"
+
+# Primary accent color for interactive elements
+primaryColor = "#1f77b4"
+
+# Background color for the main content area
+backgroundColor = "#FFFFFF"
+
+# Background color for sidebar
+secondaryBackgroundColor = "#F0F2F6"
+
+# Color used for almost all text
+textColor = "#262730"

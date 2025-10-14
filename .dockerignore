@@ -1,0 +1,12 @@
+# Ignore OS and editor files
+*.swp
+*~
+.DS_Store
+
+# Ignore database data directory
+workspace/db_data/
+
+# Ignore logs and caches
+workspace/cron/cron.log
+logs/
+
