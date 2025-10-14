@@ -1,0 +1,5 @@
+# Run my_cron_task.sh every 5 minutes
+# every 24 hours at 3 am fo rproduction
+#0 3 * * * root /workspace/cron/my_cron_task.sh >> /workspace/cron/cron.log 2>&1
+# every minute for testng purposes
+* * * * * root /workspace/cron/my_cron_task.sh >> /workspace/cron/cron.log 2>&1

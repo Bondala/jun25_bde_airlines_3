@@ -1,0 +1,74 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: airlines_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./workspace/db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+
+  data-importer:
+    build: .
+    container_name: airlines_data_importer
+    image: airlines-data-importer       # <-- changed: added valid image name
+    working_dir: /workspace
+    volumes:
+      - ./workspace:/workspace
+      - data_flag:/tmp
+    depends_on:
+      - db
+    command: >
+      bash -c "
+      rm -f tmp/data_import_complete;
+      echo 'Waiting for MySQL to be ready...';
+      while ! mysqladmin ping -hdb -umyuser -pmypassword --silent; do sleep 5; done;
+      echo 'Importing airlines data...';
+      python3 airlines_api_call.py;
+      echo 'Data import completed!';
+      mkdir -p tmp;
+      touch tmp/data_import_complete;
+      "
+
+  flask-app:
+    build: .
+    container_name: airlines_flask
+    image: airlines-flask-app           # <-- changed: added valid image name
+    working_dir: /workspace
+    volumes:
+      - ./workspace:/workspace
+      - data_flag:/tmp
+    ports:
+      - "5001:5000"
+    depends_on:      #               echo 'Setup cronjob outside';       bash setup_cron.sh;
+      - data-importer
+    command: >
+      bash -c "
+      echo 'Waiting for data import to complete...';
+      while [ ! -f tmp/data_import_complete ]; do sleep 5; done;
+      rm -f tmp/data_import_complete;
+      echo 'Starting Flask app...';
+      python3 user_input.py;
+      "
+  
+  cron-setup:
+    build:
+      context: ./workspace/cron
+    container_name: airlines_cron
+    image: airlines-cron
+    working_dir: /workspace
+    volumes:
+      - ./workspace:/workspace
+      - data_flag:/tmp
+    depends_on:
+      - data-importer
+
+volumes:
+  db_data:
+  data_flag:
